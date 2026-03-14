@@ -25,6 +25,8 @@ USER_NAME=$SUDO_USER
 ZSH_CUSTOM="${ZSH_CUSTOM:-$USER_HOME/.oh-my-zsh/custom}"
 P10K_FILE="$USER_HOME/.p10k.zsh"
 P10K_RAW_URL="https://raw.githubusercontent.com/tspyder7/bootstrap-shell/refs/heads/main/config/.p10k.zsh"
+GIT_ALIAS_FILE="$ZSH_CUSTOM/git_aliases.zsh"
+GIT_ALIAS_RAW_URL="https://raw.githubusercontent.com/tspyder7/bootstrap-shell/refs/heads/main/config/git_aliases.zsh"
 
 SAFE_PKGS=(git curl)
 INSTALLED_PKGS=()
@@ -40,14 +42,15 @@ INSTALL_TASKS=(
 "Install Zsh plugins"
 "Install fzf"
 "Configure .zshrc"
+"Install Git aliases"
 "Install Powerlevel10k config"
 )
 
 UNINSTALL_TASKS=(
 "Remove Oh My Zsh"
 "Remove fzf"
-"Remove Zsh tmp files"
 "Remove Powerlevel10k config"
+"Remove Git aliases"
 "Restore Bash shell"
 "Remove installed packages"
 )
@@ -234,6 +237,13 @@ install_p10k_config() {
   sudo -u "$SUDO_USER" curl -fsSL "$P10K_RAW_URL" -o "$P10K_FILE"
 }
 
+install_git_aliases() {
+  if [ -f "$GIT_ALIAS_FILE" ]; then
+    return
+  fi
+  sudo -u "$SUDO_USER" curl -fsSL "$GIT_ALIAS_RAW_URL" -o "$GIT_ALIAS_FILE"
+}
+
 ########################################
 # Uninstall tasks
 ########################################
@@ -249,6 +259,9 @@ remove_p10k_config() {
   rm -f "$P10K_FILE"
 }
 
+remove_git_aliases() {
+  rm -f "$GIT_ALIAS_FILE"
+}
 restore_bash() {
   chsh -s /bin/bash "$USER_NAME"
 }
@@ -285,15 +298,17 @@ if [[ "$MODE" == "install" ]]; then
   run_task 4 install_plugins
   run_task 5 install_fzf
   run_task 6 configure_zshrc
-  run_task 7 install_p10k_config
+  run_task 7 install_git_aliases
+  run_task 8 install_p10k_config
 
 else
   run_task 0 remove_ohmyzsh
   run_task 1 remove_fzf
   run_task 2 remove_zsh_tmp_files
-  run_task 3 remove_p10k_config
-  run_task 4 restore_bash
-  run_task 5 remove_packages
+  run_task 3 remove_git_aliases
+  run_task 4 remove_p10k_config
+  run_task 5 restore_bash
+  run_task 6 remove_packages
 fi
 
 ########################################
