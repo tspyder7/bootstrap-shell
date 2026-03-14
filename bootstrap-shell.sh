@@ -46,6 +46,7 @@ INSTALL_TASKS=(
 UNINSTALL_TASKS=(
 "Remove Oh My Zsh"
 "Remove fzf"
+"Remove Zsh tmp files"
 "Remove Powerlevel10k config"
 "Restore Bash shell"
 "Remove installed packages"
@@ -258,6 +259,14 @@ remove_packages() {
   done
 }
 
+remove_zsh_tmp_files() {
+  rm -rf "$USER_HOME/.zshrc"
+  rm -rf "$USER_HOME/.zshrc.pre-oh-my-zsh"
+  rm -rf "$USER_HOME/.zsh_history"
+  rm -rf "$USER_HOME/.zcompdump"*
+  rm -rf "$USER_HOME/.cache/zsh"
+}
+
 ########################################
 # Timer
 ########################################
@@ -281,9 +290,10 @@ if [[ "$MODE" == "install" ]]; then
 else
   run_task 0 remove_ohmyzsh
   run_task 1 remove_fzf
-  run_task 2 remove_p10k_config
-  run_task 3 restore_bash
-  run_task 4 remove_packages
+  run_task 2 remove_zsh_tmp_files
+  run_task 3 remove_p10k_config
+  run_task 4 restore_bash
+  run_task 5 remove_packages
 fi
 
 ########################################
